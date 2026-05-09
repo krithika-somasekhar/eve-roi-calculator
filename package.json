@@ -1,0 +1,14 @@
+{
+  "name": "eve-roi-calculator",
+  "version": "0.1.0",
+  "description": "ROI Calculator for EVE Health prospects — lead magnet for the sales funnel.",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx http-server -p 3000 -c-1 .",
+    "start": "npx http-server -p 3000 -c-1 ."
+  },
+  "keywords": ["roi", "healthcare", "analytics", "calculator", "eve-health"],
+  "author": "EVE Health Data & Analytics",
+  "license": "UNLICENSED",
+  "private": true
+}

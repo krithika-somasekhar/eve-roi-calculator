@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>EVE Health — ROI Calculator</title>
+    <meta name="description" content="See how much your support team could save with EVE Health." />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="min-h-screen bg-slate-50 text-slate-900 antialiased">
+    <main class="mx-auto max-w-3xl px-6 py-12 md:py-16">
+      <!-- Hero -->
+      <header class="mb-10">
+        <p class="text-sm font-semibold uppercase tracking-wider text-blue-700">
+          EVE Health
+        </p>
+        <h1 class="mt-2 text-4xl font-bold tracking-tight md:text-5xl">
+          Calculate your ROI with EVE
+        </h1>
+        <p class="mt-3 max-w-xl text-lg text-slate-600">
+          Five numbers. Thirty seconds. See what your support team could save.
+        </p>
+      </header>
+
+      <!-- Form -->
+      <section
+        aria-labelledby="form-heading"
+        class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm md:p-8"
+      >
+        <h2 id="form-heading" class="text-lg font-semibold">Your current state</h2>
+        <p class="mt-1 text-sm text-slate-500">
+          Pre-filled with industry medians — change any field to your numbers.
+        </p>
+
+        <form id="roi-form" class="mt-6 grid gap-5 md:grid-cols-2" novalidate>
+          <div>
+            <label for="tickets" class="block text-sm font-medium text-slate-700">
+              Support tickets per month
+            </label>
+            <input
+              id="tickets" name="tickets" type="number" inputmode="numeric"
+              min="50" max="50000" step="1" value="500" required
+              class="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-base shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+            />
+            <p class="mt-1 text-xs text-slate-500">
+              Total inbound support volume across all facilities.
+            </p>
+          </div>
+
+          <div>
+            <label for="hours" class="block text-sm font-medium text-slate-700">
+              Avg resolution time (hours)
+            </label>
+            <input
+              id="hours" name="hours" type="number" inputmode="decimal"
+              min="1" max="200" step="0.5" value="18" required
+              class="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-base shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+            />
+            <p class="mt-1 text-xs text-slate-500">
+              How long it takes to close an average ticket.
+            </p>
+          </div>
+
+          <div>
+            <label for="ftes" class="block text-sm font-medium text-slate-700">
+              FTE support analysts
+            </label>
+            <input
+              id="ftes" name="ftes" type="number" inputmode="decimal"
+              min="1" max="100" step="0.5" value="4" required
+              class="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-base shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+            />
+            <p class="mt-1 text-xs text-slate-500">
+              Full-time equivalents handling these tickets.
+            </p>
+          </div>
+
+          <div>
+            <label for="toolcost" class="block text-sm font-medium text-slate-700">
+              Current monthly tool cost ($)
+            </label>
+            <input
+              id="toolcost" name="toolcost" type="number" inputmode="numeric"
+              min="0" max="200000" step="100" value="8500" required
+              class="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-base shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+            />
+            <p class="mt-1 text-xs text-slate-500">
+              Sum of analytics, ticketing, and BI tool subscriptions.
+            </p>
+          </div>
+
+          <div class="md:col-span-2">
+            <label for="facilities" class="block text-sm font-medium text-slate-700">
+              Number of facilities
+            </label>
+            <input
+              id="facilities" name="facilities" type="number" inputmode="numeric"
+              min="1" max="50" step="1" value="3" required
+              class="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-base shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
+            />
+            <p class="mt-1 text-xs text-slate-500">
+              Hospitals or clinics covered by the same team.
+            </p>
+          </div>
+
+          <div class="md:col-span-2 flex items-center justify-between gap-4 pt-2">
+            <p id="form-error" class="text-sm text-red-600" role="alert"></p>
+            <button
+              type="submit"
+              class="inline-flex items-center justify-center rounded-lg bg-blue-700 px-5 py-2.5 font-semibold text-white shadow-sm hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            >
+              Calculate ROI
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Results -->
+      <section
+        id="results"
+        aria-labelledby="results-heading"
+        class="mt-10 hidden"
+      >
+        <h2 id="results-heading" class="text-2xl font-bold tracking-tight">
+          Your estimated impact
+        </h2>
+        <p id="results-subtext" class="mt-1 text-sm text-slate-500">
+          Based on the inputs above and conservative assumptions.
+        </p>
+
+        <!-- Sales-conversation case (negative ROI) -->
+        <div
+          id="sales-conversation"
+          class="mt-6 hidden rounded-xl border-2 border-blue-200 bg-blue-50 p-6"
+        >
+          <h3 class="text-lg font-semibold text-blue-900">
+            Your scenario benefits from a custom ROI analysis
+          </h3>
+          <p class="mt-2 text-sm text-blue-900/80">
+            With your current setup, the standard calculation doesn't capture the full picture.
+            Talk to our team for a custom analysis tailored to your facilities.
+          </p>
+          <a
+            href="mailto:sales@evehealth.example?subject=Custom%20ROI%20analysis"
+            class="mt-4 inline-flex rounded-lg bg-blue-700 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-800"
+          >
+            Contact sales
+          </a>
+        </div>
+
+        <!-- Standard results: 4 metric cards -->
+        <div
+          id="metrics-grid"
+          class="mt-6 grid gap-4 sm:grid-cols-2"
+        >
+          <article class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+            <p class="text-sm font-medium text-slate-500">Time savings</p>
+            <p class="mt-2 text-3xl font-bold text-emerald-600">
+              <span id="metric-hours">—</span>
+              <span class="text-base font-medium text-slate-500">hrs/mo</span>
+            </p>
+          </article>
+
+          <article class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+            <p class="text-sm font-medium text-slate-500">Cost savings</p>
+            <p class="mt-2 text-3xl font-bold text-emerald-600">
+              <span id="metric-savings">—</span>
+              <span class="text-base font-medium text-slate-500">/mo</span>
+            </p>
+          </article>
+
+          <article class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+            <p class="text-sm font-medium text-slate-500">ROI (year 1)</p>
+            <p class="mt-2 text-3xl font-bold text-blue-700">
+              <span id="metric-roi">—</span>
+            </p>
+          </article>
+
+          <article class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+            <p class="text-sm font-medium text-slate-500">Payback period</p>
+            <p class="mt-2 text-3xl font-bold text-blue-700">
+              <span id="metric-payback">—</span>
+            </p>
+          </article>
+        </div>
+
+        <!-- Chart -->
+        <div
+          id="chart-wrap"
+          class="mt-6 rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
+        >
+          <h3 class="text-base font-semibold">Monthly cost — current vs. with EVE</h3>
+          <div class="mt-3" style="position: relative; height: 280px;">
+            <canvas id="cost-chart"></canvas>
+          </div>
+        </div>
+
+        <!-- Assumptions panel -->
+        <details class="mt-6 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+          <summary class="cursor-pointer text-base font-semibold">
+            How this is calculated
+          </summary>
+          <div class="mt-4 text-sm text-slate-600">
+            <p>
+              The calculator uses conservative industry assumptions. Adjust your inputs
+              above to see how the numbers change.
+            </p>
+            <ul class="mt-3 list-disc space-y-1 pl-5">
+              <li>
+                <strong>30% reduction in active analyst time per ticket</strong>
+                — median reported by current EVE customers (n=42). Applied
+                only to the active-labor portion of resolution time
+                (~10%), not the full elapsed clock-time.
+              </li>
+              <li>
+                <strong>$95,000 loaded analyst cost / year</strong> — BLS 2025
+                median for "healthcare data analyst" plus 30% benefits load.
+              </li>
+              <li>
+                <strong>EVE Platform: $5,500/month per facility</strong> —
+                Professional tier pricing.
+              </li>
+              <li>
+                <strong>$15,000 one-time implementation</strong> in year 1 only.
+              </li>
+              <li>
+                <strong>$25,000 per facility/year in avoided costs</strong> —
+                reduced reporting overhead and fewer escalations, from EVE
+                customer case studies.
+              </li>
+            </ul>
+            <p class="mt-3 text-xs italic text-slate-500">
+              Your actual savings depend on staffing model, ticket mix, and
+              data infrastructure. Talk to sales for a custom analysis.
+            </p>
+          </div>
+        </details>
+      </section>
+
+      <footer class="mt-12 text-center text-xs text-slate-500">
+        © EVE Health. Calculator illustrative — figures are estimates.
+      </footer>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

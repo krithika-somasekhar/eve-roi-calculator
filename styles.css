@@ -1,0 +1,16 @@
+/* EVE Health ROI Calculator — custom styles
+ *
+ * Tailwind handles most styling via CDN in index.html.
+ * Use this file for brand-specific overrides only.
+ *
+ * Brand palette (from health-quiz/CLAUDE.md):
+ *   --eve-primary: #1e40af
+ *   --eve-positive: #059669
+ *   --eve-pain:     #dc2626
+ */
+
+:root {
+  --eve-primary: #1e40af;
+  --eve-positive: #059669;
+  --eve-pain: #dc2626;
+}
